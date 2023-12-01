@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="notice">
+	<select id="selectNoticeList" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT
+			    IDX, CATEGORY, TITLE, CREAT_DT
+			FROM
+			    NOTICE
+		]]>
+	</select>
+	
+	<select id="getBoardContents" parameterType="java.lang.Integer" resultType="com.jackie_cafe.servicecenter.repository.NoticeVO">
+		<![CDATA[
+			SELECT
+			    IDX, CATEGORY, TITLE, CONTENTS, CREAT_DT
+			FROM
+			    NOTICE
+			    WHERE IDX = #{IDX}
+		]]>
+	</select>
+	
+	<insert id="insertNotice" parameterType="hashmap">
+		<![CDATA[
+			INSERT INTO NOTICE
+				(IDX, CATEGORY, TITLE, CONTENTS, ATCH_NM, CREAT_DT, LATEST_DT, HIT_CNT)
+			VALUES
+				((SELECT MAXFIELD FROM (SELECT MAX(IDX) AS MAXFIELD FROM NOTICE) AS SUB_TABLE) + 1,
+				#{CATEGORY}, #{TITLE}, #{CONTENTS}, #{ATCH_NM}, SYSDATE(), SYSDATE(), 1) 
+		]]>
+	</insert>
+</mapper>
